@@ -92,17 +92,6 @@ export default function ResidentDashboard() {
     }
   };
 
-  const handleSocialLogin = async (provider) => {
-    showNotification(`Simulating secure ${provider} Single Sign-On...`, 'info');
-    setAuthLoading(true);
-    setTimeout(async () => {
-      const res = await login('jane@example.com', 'password123'); // Logs in Jane Doe (Resident)
-      setAuthLoading(false);
-      if (res && res.success) {
-        refreshUser();
-      }
-    }, 1200);
-  };
 
   const handleForgotPassword = (e) => {
     e.preventDefault();
@@ -345,30 +334,6 @@ export default function ResidentDashboard() {
             )}
           </form>
 
-          {/* Social login division */}
-          <div className="relative my-6">
-            <div className="absolute inset-0 flex items-center">
-              <span className="w-full border-t border-zinc-200 dark:border-zinc-800"></span>
-            </div>
-            <div className="relative flex justify-center text-[9px] uppercase">
-              <span className="bg-white dark:bg-zinc-950 px-2 text-zinc-400">Or continue with</span>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-2 gap-4">
-            <button
-              onClick={() => handleSocialLogin('Google')}
-              className="flex items-center justify-center py-2 border border-zinc-200 dark:border-zinc-800 hover:bg-zinc-50 dark:hover:bg-zinc-900/60 rounded text-xs font-semibold transition-all"
-            >
-              Google
-            </button>
-            <button
-              onClick={() => handleSocialLogin('GitHub')}
-              className="flex items-center justify-center py-2 border border-zinc-200 dark:border-zinc-800 hover:bg-zinc-50 dark:hover:bg-zinc-900/60 rounded text-xs font-semibold transition-all"
-            >
-              GitHub
-            </button>
-          </div>
 
           <div className="mt-6 text-center text-xs space-y-2">
             <div>

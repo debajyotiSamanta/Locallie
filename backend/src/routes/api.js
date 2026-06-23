@@ -299,7 +299,7 @@ router.post('/issues', async (req, res) => {
       dateReported: new Date().toISOString(),
       dateClaimed: null,
       dateResolved: null,
-      beforeImage: image || "",
+      beforeImage: imageUrl || "",
       afterImage: "",
       isAnonymous: !!isAnonymous,
       department: category === "Road Damage" ? "Public Works Department"
@@ -467,8 +467,23 @@ router.post('/issues/:id/resolve', async (req, res) => {
       return res.status(403).json({ error: "You are not the hero who claimed this issue" });
     }
 
+    // Upload base64 afterImage to Cloudinary if provided
+    let afterImageUrl = '';
+    if (afterImage && afterImage.startsWith('data:')) {
+      try {
+        const uploadResult = await uploadBase64(afterImage, { folder: 'locallie/issues' });
+        afterImageUrl = uploadResult.secure_url;
+        console.log('[Cloudinary] Resolution image uploaded:', afterImageUrl);
+      } catch (uploadErr) {
+        console.error('[Cloudinary] Failed to upload resolution image, using fallback:', uploadErr.message);
+        afterImageUrl = afterImage; // fallback to base64
+      }
+    } else {
+      afterImageUrl = afterImage;
+    }
+
     issue.status = "resolved";
-    issue.afterImage = afterImage;
+    issue.afterImage = afterImageUrl;
     issue.dateResolved = new Date().toISOString();
 
     // Award large gamification rewards to resolving Hero/NGO

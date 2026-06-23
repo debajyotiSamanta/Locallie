@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { MapPin, ChevronDown, ChevronUp, Mail, ExternalLink, Shield, Users, Award, BarChart3, Heart, Phone, Globe } from 'lucide-react';
+import logoImg from '../assets/logo.jpg';
 
 const faqs = [
   {
@@ -63,7 +64,7 @@ export default function Footer() {
         <div className="text-center mb-12">
           <h2 className="text-2xl font-bold tracking-tight">Frequently Asked Questions</h2>
           <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-2">
-            Everything you need to know about Locallie and how it works.
+            Everything you need to know about LocalFix and how it works.
           </p>
         </div>
 
@@ -151,10 +152,8 @@ export default function Footer() {
                 className="flex items-center space-x-2.5 cursor-pointer"
                 onClick={() => setActiveTab('landing')}
               >
-                <div className="p-2 bg-black text-white dark:bg-white dark:text-black rounded-lg">
-                  <MapPin className="w-4 h-4" />
-                </div>
-                <span className="text-base font-bold tracking-tight">Locallie</span>
+                <img src={logoImg} alt="LocalFix Logo" className="w-6 h-6 rounded object-cover" />
+                <span className="text-base font-bold tracking-tight">LocalFix</span>
               </div>
               <p className="text-xs text-zinc-500 dark:text-zinc-400 leading-relaxed">
                 AI-Powered Hyperlocal Community Problem Solving Platform. Empowering residents to report, track, and resolve neighborhood issues collaboratively.
@@ -169,7 +168,7 @@ export default function Footer() {
               </div>
               <div className="flex items-center space-x-2 text-xs text-zinc-400 dark:text-zinc-500">
                 <Mail className="w-3.5 h-3.5" />
-                <span>civic@locallie.in</span>
+                <span>civic@localfix.in</span>
               </div>
 
               {/* Social Links */}
@@ -254,22 +253,22 @@ export default function Footer() {
               <h4 className="text-xs font-bold uppercase tracking-widest text-zinc-400 dark:text-zinc-500 mb-5">Legal & Info</h4>
               <ul className="space-y-3">
                 {[
-                  'Privacy Policy',
-                  'Terms of Service',
-                  'Cookie Policy',
-                  'Data Retention',
-                  'Report Abuse',
-                  'Accessibility',
-                  'Open Source',
-                  'API Documentation',
+                  { label: 'Privacy Policy', tab: 'privacy' },
+                  { label: 'Terms of Service', tab: 'terms' },
+                  { label: 'Cookie Policy', tab: 'cookie' },
+                  { label: 'Data Retention', tab: 'retention' },
+                  { label: 'Report Abuse', tab: 'abuse' },
+                  { label: 'Accessibility', tab: 'accessibility' },
+                  { label: 'Open Source', tab: 'opensource' },
+                  { label: 'API Documentation', tab: 'api' },
                 ].map((item) => (
-                  <li key={item}>
-                    <a
-                      href="#"
-                      className="text-xs text-zinc-500 dark:text-zinc-400 hover:text-black dark:hover:text-white transition-colors"
+                  <li key={item.tab}>
+                    <button
+                      onClick={() => setActiveTab(item.tab)}
+                      className="text-xs text-zinc-500 dark:text-zinc-400 hover:text-black dark:hover:text-white transition-colors text-left"
                     >
-                      {item}
-                    </a>
+                      {item.label}
+                    </button>
                   </li>
                 ))}
               </ul>
@@ -283,7 +282,7 @@ export default function Footer() {
       <div className="border-t border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/30">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5 flex flex-col sm:flex-row justify-between items-center gap-3">
           <p className="text-[10px] text-zinc-400 dark:text-zinc-500 text-center sm:text-left">
-            © 2026 Locallie Inc. · AI-Powered Hyperlocal Problem Solving · All rights reserved.
+            © 2026 LocalFix Inc. · AI-Powered Hyperlocal Problem Solving · All rights reserved.
           </p>
           <div className="flex items-center space-x-4 text-[10px] text-zinc-400 dark:text-zinc-500">
             <span>Made with</span>

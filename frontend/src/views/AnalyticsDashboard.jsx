@@ -98,7 +98,7 @@ export default function AnalyticsDashboard() {
         </div>
         <button
           onClick={loadAnalytics}
-          className="p-2 border border-zinc-200/80 dark:border-zinc-900 rounded-xl bg-zinc-50/50 dark:bg-zinc-950/40 text-zinc-550 hover:text-black dark:hover:text-white hover:border-zinc-405 dark:hover:border-zinc-700 transition-all"
+          className="p-2 border border-zinc-200/80 dark:border-zinc-900 rounded-xl bg-zinc-50/50 dark:bg-zinc-950/40 text-zinc-600 hover:text-black dark:hover:text-white hover:border-zinc-400 dark:hover:border-zinc-700 transition-all"
           title="Refresh Data"
         >
           <RefreshCw className="w-4 h-4" />
@@ -291,13 +291,13 @@ export default function AnalyticsDashboard() {
             <div className="space-y-4">
               {generateAIInsights().map((insight, idx) => (
                 <div key={idx} className="p-3 bg-white dark:bg-black rounded-xl border border-zinc-200/60 dark:border-zinc-900 text-xs">
-                  <p className="leading-relaxed text-zinc-650 dark:text-zinc-300 font-semibold">{insight}</p>
+                  <p className="leading-relaxed text-zinc-600 dark:text-zinc-300 font-semibold">{insight}</p>
                 </div>
               ))}
             </div>
           </div>
           
-          <div className="pt-6 border-t border-zinc-150 dark:border-zinc-850 text-[10px] text-zinc-500 font-medium leading-relaxed">
+          <div className="pt-6 border-t border-zinc-100 dark:border-zinc-800 text-[10px] text-zinc-500 font-medium leading-relaxed">
             AI telemetry parses issue logs daily to extract qualitative trends.
           </div>
         </div>
@@ -337,7 +337,7 @@ export default function AnalyticsDashboard() {
                   <div className="text-xs text-left p-1">
                     <span className="font-bold block text-zinc-900">{pin.title}</span>
                     <span className="text-[10px] text-zinc-500 block uppercase mt-0.5">{pin.category}</span>
-                    <span className="text-[10px] text-zinc-650 block mt-1">Priority Weight: <b>{Math.round(pin.weight * 100)}%</b></span>
+                    <span className="text-[10px] text-zinc-600 block mt-1">Priority Weight: <b>{Math.round(pin.weight * 100)}%</b></span>
                   </div>
                 </Popup>
               </Circle>

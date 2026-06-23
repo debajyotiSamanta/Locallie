@@ -12,13 +12,11 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "cloudinary": "^1.41.3",
     "cors": "^2.8.6",
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
     "mongoose": "^9.7.2",
-    "multer": "^2.2.0",
-    "multer-storage-cloudinary": "^4.0.0"
+    "multer": "^2.2.0"
   },
   "devDependencies": {
     "nodemon": "^3.1.14"

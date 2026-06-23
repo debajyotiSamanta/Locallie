@@ -11,6 +11,7 @@ import NGODashboard from './views/NGODashboard';
 import AdminDashboard from './views/AdminDashboard';
 import Settings from './views/Settings';
 import AnalyticsDashboard from './views/AnalyticsDashboard';
+import InfoPage from './views/InfoPage';
 import { AlertCircle, CheckCircle2, Info } from 'lucide-react';
 
 function MainAppContent() {
@@ -42,6 +43,15 @@ function MainAppContent() {
         return <Settings />;
       case 'analytics':
         return <AnalyticsDashboard />;
+      case 'privacy':
+      case 'terms':
+      case 'cookie':
+      case 'retention':
+      case 'abuse':
+      case 'accessibility':
+      case 'opensource':
+      case 'api':
+        return <InfoPage initialTab={activeTab} />;
       case 'landing':
       default:
         return <LandingPage />;

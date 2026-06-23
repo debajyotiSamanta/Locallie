@@ -4,6 +4,24 @@ import { api } from '../services/api';
 import LocallieMap from '../components/LocallieMap';
 import { Search, Grid, Map, Clock, Filter, ThumbsUp, MessageCircle, Share2, MapPin, X, Send, ShieldAlert, Award } from 'lucide-react';
 
+const CATEGORY_FALLBACKS = {
+  'Road Damage': 'https://images.unsplash.com/photo-1515162305285-0293e4767cc2?w=800',
+  'Sanitation': 'https://images.unsplash.com/photo-1611284446314-60a58ac0deb9?w=800',
+  'Electrical': 'https://images.unsplash.com/photo-1509023467866-9099f4401b56?w=800',
+  'Water Leakage': 'https://images.unsplash.com/photo-1585771724684-38269d6639fd?w=800',
+  'Fallen Trees': 'https://images.unsplash.com/photo-1534274988757-a28bf1a57c17?w=800',
+  'Public Safety': 'https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=800',
+  'default': 'https://images.unsplash.com/photo-1599740831119-070df34b00cf?w=800'
+};
+
+const getIssueImage = (img, category) => {
+  if (!img || typeof img !== 'string') return CATEGORY_FALLBACKS[category] || CATEGORY_FALLBACKS['default'];
+  const trimmed = img.trim();
+  if (!trimmed) return CATEGORY_FALLBACKS[category] || CATEGORY_FALLBACKS['default'];
+  // data: URLs are base64 images stored directly in MongoDB — display them as-is
+  return trimmed;
+};
+
 export default function PublicFeed() {
   const { user, showNotification } = useAuth();
   
@@ -172,7 +190,7 @@ export default function PublicFeed() {
     switch (state) {
       case 'resolved': return 'bg-zinc-100 dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100 border border-zinc-200 dark:border-zinc-800';
       case 'claimed': return 'bg-zinc-100 dark:bg-zinc-900 text-zinc-500 dark:text-zinc-400 border border-zinc-200 dark:border-zinc-800';
-      default: return 'bg-black text-white dark:bg-white dark:text-black border border-zinc-800 dark:border-zinc-250';
+      default: return 'bg-black text-white dark:bg-white dark:text-black border border-zinc-800 dark:border-zinc-300';
     }
   };
 
@@ -187,24 +205,24 @@ export default function PublicFeed() {
         </div>
 
         {/* View Toggle */}
-        <div className="flex bg-zinc-100 dark:bg-zinc-900 p-1 rounded border border-zinc-250 dark:border-zinc-800 w-full sm:w-auto justify-between">
+        <div className="flex bg-zinc-100 dark:bg-zinc-900 p-1 rounded border border-zinc-300 dark:border-zinc-800 w-full sm:w-auto justify-between">
           <button
             onClick={() => setViewMode('grid')}
-            className={`px-3 py-1.5 rounded flex items-center space-x-1.5 text-xs font-semibold transition-all ${viewMode === 'grid' ? 'bg-white dark:bg-zinc-850 shadow-sm text-zinc-950 dark:text-white' : 'text-zinc-500'}`}
+            className={`px-3 py-1.5 rounded flex items-center space-x-1.5 text-xs font-semibold transition-all ${viewMode === 'grid' ? 'bg-white dark:bg-zinc-800 shadow-sm text-zinc-950 dark:text-white' : 'text-zinc-500'}`}
           >
             <Grid className="w-3.5 h-3.5" />
             <span>Grid</span>
           </button>
           <button
             onClick={() => setViewMode('map')}
-            className={`px-3 py-1.5 rounded flex items-center space-x-1.5 text-xs font-semibold transition-all ${viewMode === 'map' ? 'bg-white dark:bg-zinc-850 shadow-sm text-zinc-950 dark:text-white' : 'text-zinc-500'}`}
+            className={`px-3 py-1.5 rounded flex items-center space-x-1.5 text-xs font-semibold transition-all ${viewMode === 'map' ? 'bg-white dark:bg-zinc-800 shadow-sm text-zinc-950 dark:text-white' : 'text-zinc-500'}`}
           >
             <Map className="w-3.5 h-3.5" />
             <span>Map</span>
           </button>
           <button
             onClick={() => setViewMode('timeline')}
-            className={`px-3 py-1.5 rounded flex items-center space-x-1.5 text-xs font-semibold transition-all ${viewMode === 'timeline' ? 'bg-white dark:bg-zinc-850 shadow-sm text-zinc-950 dark:text-white' : 'text-zinc-500'}`}
+            className={`px-3 py-1.5 rounded flex items-center space-x-1.5 text-xs font-semibold transition-all ${viewMode === 'timeline' ? 'bg-white dark:bg-zinc-800 shadow-sm text-zinc-950 dark:text-white' : 'text-zinc-500'}`}
           >
             <Clock className="w-3.5 h-3.5" />
             <span>Timeline</span>
@@ -227,8 +245,8 @@ export default function PublicFeed() {
         </div>
 
         {/* Filters Sidebar */}
-        <div className={`${showMobileFilters ? 'block' : 'hidden'} lg:block lg:col-span-1 bg-white dark:bg-zinc-950 border border-zinc-250 dark:border-zinc-800 rounded-lg p-5 shadow-sm h-fit space-y-6 text-left`}>
-          <div className="flex items-center space-x-2 text-zinc-950 dark:text-zinc-100 font-bold text-xs pb-3 border-b border-zinc-150 dark:border-zinc-800">
+        <div className={`${showMobileFilters ? 'block' : 'hidden'} lg:block lg:col-span-1 bg-white dark:bg-zinc-950 border border-zinc-300 dark:border-zinc-800 rounded-lg p-5 shadow-sm h-fit space-y-6 text-left`}>
+          <div className="flex items-center space-x-2 text-zinc-950 dark:text-zinc-100 font-bold text-xs pb-3 border-b border-zinc-100 dark:border-zinc-800">
             <Filter className="w-3.5 h-3.5 text-zinc-950 dark:text-white" />
             <span>Filters</span>
           </div>
@@ -244,11 +262,11 @@ export default function PublicFeed() {
                 placeholder="Search..."
                 className="w-full pl-8 pr-8 py-2 border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900 rounded text-xs focus:ring-1 focus:ring-black dark:focus:ring-white focus:outline-none"
               />
-              <Search className="w-3.5 h-3.5 text-zinc-450 absolute left-2.5 top-2.5" />
+              <Search className="w-3.5 h-3.5 text-zinc-500 absolute left-2.5 top-2.5" />
               {search && (
                 <button
                   onClick={() => setSearch('')}
-                  className="absolute right-2.5 top-2 text-zinc-400 hover:text-zinc-650"
+                  className="absolute right-2.5 top-2 text-zinc-400 hover:text-zinc-600"
                   type="button"
                 >
                   <X className="w-3 h-3" />
@@ -293,7 +311,7 @@ export default function PublicFeed() {
           {/* Radius Selector */}
           <div className="space-y-2.5 pt-2">
             <div className="flex items-center justify-between">
-              <label className="text-[9px] font-bold uppercase tracking-wider text-zinc-405">Geofence</label>
+              <label className="text-[9px] font-bold uppercase tracking-wider text-zinc-400">Geofence</label>
               <input
                 type="checkbox"
                 checked={useGps}
@@ -327,13 +345,13 @@ export default function PublicFeed() {
           {loading ? (
             <div className="flex flex-col items-center justify-center py-24 space-y-2">
               <div className="w-6 h-6 border-2 border-black dark:border-white border-t-transparent rounded-full animate-spin"></div>
-              <p className="text-[11px] text-zinc-550">Loading feed...</p>
+              <p className="text-[11px] text-zinc-600">Loading feed...</p>
             </div>
           ) : issues.length === 0 ? (
             <div className="bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded p-16 text-center shadow-sm">
               <span className="block text-2xl mb-2">🔍</span>
               <h3 className="font-bold text-xs text-zinc-900 dark:text-zinc-200">No Reports Logged</h3>
-              <p className="text-xs text-zinc-505 mt-1 max-w-xs mx-auto">Try widening your filters to see nearby reports.</p>
+              <p className="text-xs text-zinc-500 mt-1 max-w-xs mx-auto">Try widening your filters to see nearby reports.</p>
             </div>
           ) : viewMode === 'map' ? (
             <div className="h-[500px] w-full rounded-lg overflow-hidden bg-zinc-100 dark:bg-zinc-900">
@@ -374,10 +392,15 @@ export default function PublicFeed() {
                 <div 
                   key={issue.id} 
                   onClick={() => setSelectedIssue(issue)}
-                  className="bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-lg overflow-hidden hover:border-zinc-450 dark:hover:border-zinc-700 duration-200 cursor-pointer flex flex-col justify-between text-left"
+                  className="bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-lg overflow-hidden hover:border-zinc-500 dark:hover:border-zinc-700 duration-200 cursor-pointer flex flex-col justify-between text-left"
                 >
                   <div className="relative h-40 bg-zinc-100 dark:bg-zinc-900">
-                    <img src={issue.image} alt={issue.title} className="w-full h-full object-cover" />
+                    <img
+                      src={getIssueImage(issue.image, issue.category)}
+                      alt={issue.title}
+                      className="w-full h-full object-cover"
+                      onError={(e) => { e.target.src = CATEGORY_FALLBACKS[issue.category] || CATEGORY_FALLBACKS['default']; }}
+                    />
                     <span className={`absolute top-3 right-3 text-[9px] font-extrabold px-2 py-0.5 rounded uppercase tracking-wider ${getStatusStyle(issue.status)}`}>
                       {issue.status}
                     </span>
@@ -394,18 +417,18 @@ export default function PublicFeed() {
 
                     <div className="space-y-3">
                       <div className="flex items-center space-x-1.5 text-zinc-400 text-xs">
-                        <MapPin className="w-3.5 h-3.5 text-zinc-550 shrink-0" />
+                        <MapPin className="w-3.5 h-3.5 text-zinc-600 shrink-0" />
                         <span className="line-clamp-1 text-[10px]">{issue.address}</span>
                       </div>
 
-                      <div className="flex items-center justify-between border-t border-zinc-150 dark:border-zinc-850 pt-3 text-[11px] font-semibold">
+                      <div className="flex items-center justify-between border-t border-zinc-100 dark:border-zinc-800 pt-3 text-[11px] font-semibold">
                         <div className="flex items-center space-x-3">
                           <button
                             onClick={(e) => handleVote(e, issue.id)}
                             className={`flex items-center space-x-1.5 px-2 py-0.5 rounded transition-all ${
                               user && issue.upvotes.includes(user.id)
-                                ? 'bg-zinc-100 text-zinc-900 dark:bg-zinc-850 dark:text-zinc-100 border border-zinc-200 dark:border-zinc-700'
-                                : 'hover:bg-zinc-50 text-zinc-505 dark:hover:bg-zinc-900'
+                                ? 'bg-zinc-100 text-zinc-900 dark:bg-zinc-800 dark:text-zinc-100 border border-zinc-200 dark:border-zinc-700'
+                                : 'hover:bg-zinc-50 text-zinc-500 dark:hover:bg-zinc-900'
                             }`}
                           >
                             <ThumbsUp className="w-3 h-3" />
@@ -421,12 +444,12 @@ export default function PublicFeed() {
                         <div className="flex items-center space-x-2">
                           <button
                             onClick={(e) => { e.stopPropagation(); shareIssue(issue); }}
-                            className="p-1 text-zinc-450 hover:text-black dark:hover:text-white"
+                            className="p-1 text-zinc-500 hover:text-black dark:hover:text-white"
                             title="Share"
                           >
                             <Share2 className="w-3.5 h-3.5" />
                           </button>
-                          <span className="text-[9px] font-bold bg-zinc-50 text-zinc-650 dark:bg-zinc-900 dark:text-zinc-350 px-1.5 py-0.5 rounded">
+                          <span className="text-[9px] font-bold bg-zinc-50 text-zinc-600 dark:bg-zinc-900 dark:text-zinc-300 px-1.5 py-0.5 rounded">
                             Score: {issue.priorityScore}
                           </span>
                         </div>
@@ -444,9 +467,9 @@ export default function PublicFeed() {
         <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm flex items-center justify-center p-4">
           <div className="bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 w-full max-w-lg rounded shadow-lg flex flex-col max-h-[90vh]">
             
-            <div className="flex justify-between items-center px-5 py-3 border-b border-zinc-150 dark:border-zinc-850 bg-zinc-50 dark:bg-zinc-900/60 text-left">
-              <span className="text-[9px] font-bold text-zinc-450 uppercase tracking-wider">Issue ticket</span>
-              <button onClick={() => setSelectedIssue(null)} className="p-1 hover:bg-zinc-200 dark:hover:bg-zinc-805 rounded">
+            <div className="flex justify-between items-center px-5 py-3 border-b border-zinc-100 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/60 text-left">
+              <span className="text-[9px] font-bold text-zinc-500 uppercase tracking-wider">Issue ticket</span>
+              <button onClick={() => setSelectedIssue(null)} className="p-1 hover:bg-zinc-200 dark:hover:bg-zinc-800 rounded">
                 <X className="w-4 h-4 text-zinc-500" />
               </button>
             </div>
@@ -457,19 +480,31 @@ export default function PublicFeed() {
                   <div>
                     <span className="block text-[8px] font-bold text-zinc-500 uppercase mb-1">Before</span>
                     <div className="h-28 rounded overflow-hidden border border-zinc-200 dark:border-zinc-800">
-                      <img src={selectedIssue.beforeImage || selectedIssue.image} className="w-full h-full object-cover" />
+                      <img
+                        src={getIssueImage(selectedIssue.beforeImage || selectedIssue.image, selectedIssue.category)}
+                        className="w-full h-full object-cover"
+                        onError={(e) => { e.target.src = CATEGORY_FALLBACKS[selectedIssue.category] || CATEGORY_FALLBACKS['default']; }}
+                      />
                     </div>
                   </div>
                   <div>
                     <span className="block text-[8px] font-bold text-zinc-900 dark:text-white uppercase mb-1">After</span>
                     <div className="h-28 rounded overflow-hidden border border-zinc-200 dark:border-zinc-800">
-                      <img src={selectedIssue.afterImage} className="w-full h-full object-cover" />
+                      <img
+                        src={getIssueImage(selectedIssue.afterImage, selectedIssue.category)}
+                        className="w-full h-full object-cover"
+                        onError={(e) => { e.target.src = CATEGORY_FALLBACKS[selectedIssue.category] || CATEGORY_FALLBACKS['default']; }}
+                      />
                     </div>
                   </div>
                 </div>
               ) : (
                 <div className="h-40 rounded overflow-hidden border border-zinc-200 dark:border-zinc-800">
-                  <img src={selectedIssue.image} className="w-full h-full object-cover" />
+                  <img
+                    src={getIssueImage(selectedIssue.image, selectedIssue.category)}
+                    className="w-full h-full object-cover"
+                    onError={(e) => { e.target.src = CATEGORY_FALLBACKS[selectedIssue.category] || CATEGORY_FALLBACKS['default']; }}
+                  />
                 </div>
               )}
 
@@ -499,10 +534,10 @@ export default function PublicFeed() {
                 </p>
               </div>
 
-              <div className="flex items-center justify-between text-xs py-2.5 border-y border-zinc-150 dark:border-zinc-850">
-                <div className="flex items-center space-x-2 text-zinc-505">
+              <div className="flex items-center justify-between text-xs py-2.5 border-y border-zinc-100 dark:border-zinc-800">
+                <div className="flex items-center space-x-2 text-zinc-500">
                   <ShieldAlert className="w-3.5 h-3.5 text-zinc-500" />
-                  <span>Routing: <b className="text-zinc-850 dark:text-zinc-200 font-semibold">{selectedIssue.department}</b></span>
+                  <span>Routing: <b className="text-zinc-800 dark:text-zinc-200 font-semibold">{selectedIssue.department}</b></span>
                 </div>
                 <div className="flex items-center space-x-1 text-zinc-900 dark:text-white">
                   <Award className="w-3.5 h-3.5" />
@@ -537,7 +572,7 @@ export default function PublicFeed() {
                     </div>
                   </div>
                   {selectedIssue.dateResolved && (
-                    <span className="text-[9px] font-bold text-zinc-905 bg-zinc-100 dark:bg-zinc-800 px-2 py-0.5 rounded border border-zinc-200 dark:border-zinc-700">
+                    <span className="text-[9px] font-bold text-zinc-900 bg-zinc-100 dark:bg-zinc-800 px-2 py-0.5 rounded border border-zinc-200 dark:border-zinc-700">
                       Resolved
                     </span>
                   )}
@@ -553,12 +588,12 @@ export default function PublicFeed() {
                     <p className="text-[10px] text-zinc-400 italic">No comments posted yet.</p>
                   ) : (
                     selectedIssue.comments.map(c => (
-                      <div key={c.id} className="bg-zinc-50 dark:bg-zinc-900 p-3 rounded border border-zinc-150 dark:border-zinc-800 text-xs">
+                      <div key={c.id} className="bg-zinc-50 dark:bg-zinc-900 p-3 rounded border border-zinc-100 dark:border-zinc-800 text-xs">
                         <div className="flex justify-between items-center mb-1">
                           <span className="font-bold text-zinc-800 dark:text-zinc-200">{c.username}</span>
-                          <span className="text-[9px] text-zinc-450">{new Date(c.date).toLocaleDateString()}</span>
+                          <span className="text-[9px] text-zinc-500">{new Date(c.date).toLocaleDateString()}</span>
                         </div>
-                        <p className="text-zinc-600 dark:text-zinc-350">{c.text}</p>
+                        <p className="text-zinc-600 dark:text-zinc-300">{c.text}</p>
                       </div>
                     ))
                   )}
@@ -582,14 +617,14 @@ export default function PublicFeed() {
                     </button>
                   </form>
                 ) : (
-                  <p className="text-[9px] text-zinc-405 bg-zinc-50 dark:bg-zinc-900 p-2 rounded text-center">
+                  <p className="text-[9px] text-zinc-400 bg-zinc-50 dark:bg-zinc-900 p-2 rounded text-center">
                     Sign in to participate in the civic feed discussion.
                   </p>
                 )}
               </div>
             </div>
 
-            <div className="px-5 py-3.5 border-t border-zinc-150 dark:border-zinc-850 bg-zinc-50 dark:bg-zinc-900/60 flex items-center justify-between">
+            <div className="px-5 py-3.5 border-t border-zinc-100 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/60 flex items-center justify-between">
               <button
                 onClick={(e) => handleVote(e, selectedIssue.id)}
                 className={`flex items-center space-x-1 px-4 py-2 rounded text-xs font-bold transition-all ${

@@ -1,6 +1,26 @@
 import React, { useEffect, useRef } from 'react';
 import L from 'leaflet';
 
+const CATEGORY_FALLBACKS = {
+  'Road Damage': 'https://images.unsplash.com/photo-1515162305285-0293e4767cc2?w=800',
+  'Sanitation': 'https://images.unsplash.com/photo-1611284446314-60a58ac0deb9?w=800',
+  'Electrical': 'https://images.unsplash.com/photo-1509023467866-9099f4401b56?w=800',
+  'Water Leakage': 'https://images.unsplash.com/photo-1585771724684-38269d6639fd?w=800',
+  'Fallen Trees': 'https://images.unsplash.com/photo-1534274988757-a28bf1a57c17?w=800',
+  'Public Safety': 'https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=800',
+  'default': 'https://images.unsplash.com/photo-1599740831119-070df34b00cf?w=800'
+};
+
+const getIssueImage = (img, category) => {
+  if (!img || typeof img !== 'string') return CATEGORY_FALLBACKS[category] || CATEGORY_FALLBACKS['default'];
+  const trimmed = img.trim();
+  if (!trimmed) return CATEGORY_FALLBACKS[category] || CATEGORY_FALLBACKS['default'];
+  // data: URLs are base64 images stored directly in MongoDB — display category fallback in map
+  // popups to keep popups lightweight; full image is shown in the detail modal
+  if (trimmed.startsWith('data:')) return CATEGORY_FALLBACKS[category] || CATEGORY_FALLBACKS['default'];
+  return trimmed;
+};
+
 export default function LocallieMap({ issues, center = [12.9716, 77.5946], radius = 5000, onSelectIssue }) {
   const mapContainerRef = useRef(null);
   const mapInstanceRef = useRef(null);
@@ -106,14 +126,15 @@ export default function LocallieMap({ issues, center = [12.9716, 77.5946], radiu
         .addTo(markersGroupRef.current);
 
       // Bind dynamic popup card
+      const fallbackSrc = CATEGORY_FALLBACKS[issue.category] || CATEGORY_FALLBACKS['default'];
       const popupContent = `
-        <div class="p-3 max-w-[240px] text-zinc-900 font-sans">
-          <div class="relative h-20 bg-zinc-100 rounded overflow-hidden mb-2">
-            <img src="${issue.image}" class="w-full h-full object-cover" />
+        <div class="p-3 max-w-[240px] text-zinc-900 bg-white dark:bg-zinc-950 dark:text-white font-sans rounded">
+          <div class="relative h-20 bg-zinc-100 dark:bg-zinc-900 rounded overflow-hidden mb-2">
+            <img src="${getIssueImage(issue.image, issue.category)}" onerror="this.src='${fallbackSrc}'" class="w-full h-full object-cover" />
             <span class="absolute top-1 right-1 text-[8px] font-bold px-1.5 py-0.5 rounded bg-black text-white">${issue.status.toUpperCase()}</span>
           </div>
           <h4 class="font-bold text-xs line-clamp-1 mb-1">${issue.title}</h4>
-          <p class="text-[10px] text-zinc-500 mb-2">${issue.category} • Severity: <b>${issue.severity}</b></p>
+          <p class="text-[10px] text-zinc-500 dark:text-zinc-400 mb-2">${issue.category} • Severity: <b>${issue.severity}</b></p>
           <button id="btn-popup-${issue.id}" class="w-full py-1 text-center bg-black hover:bg-zinc-900 text-white text-[10px] font-bold rounded transition-all cursor-pointer">
             View Details
           </button>

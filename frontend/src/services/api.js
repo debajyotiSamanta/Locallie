@@ -37,7 +37,7 @@ export const api = {
     }
   },
 
-  // File Upload → Cloudinary (via backend /api/upload)
+  // File Upload → stored as base64 data URL in MongoDB (via backend /api/upload)
   upload: {
     file: async (file, folder = 'locallie/issues') => {
       const formData = new FormData();

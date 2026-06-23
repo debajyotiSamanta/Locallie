@@ -1,4 +1,4 @@
-// AI Service Helper for Locallie
+// AI Service Helper for LocalFix
 
 // Calculate distance between two coordinates in meters (Haversine formula)
 const calculateDistance = (lat1, lon1, lat2, lon2) => {
@@ -230,7 +230,7 @@ const processChatbotQuery = (query, issues) => {
     }
   }
 
-  return `Hello! I am Locallie's AI Civic Assistant. I can help you check issue statuses, answer queries about reporting flows, guide volunteers on how to claim tasks, or provide contact information for city departments. What can I do for you today?`;
+  return `Hello! I am LocalFix's AI Civic Assistant. I can help you check issue statuses, answer queries about reporting flows, guide volunteers on how to claim tasks, or provide contact information for city departments. What can I do for you today?`;
 };
 
 module.exports = {

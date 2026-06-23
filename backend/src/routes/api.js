@@ -14,9 +14,9 @@ const {
   verifyImage,
   processChatbotQuery
 } = require('../services/ai');
-const { uploadBuffer, uploadBase64 } = require('../services/cloudinary');
+const { uploadBuffer, uploadBase64 } = require('../services/storage');
 
-// Multer: store uploads in memory so we can stream to Cloudinary
+// Multer: store uploads in memory so we can convert to base64 and store in MongoDB
 const storage = multer.memoryStorage();
 const upload = multer({
   storage,
@@ -30,15 +30,14 @@ const upload = multer({
 
 // ----------------- UPLOAD ENDPOINT -----------------
 
-// POST /api/upload — multipart file upload → Cloudinary URL
+// POST /api/upload — multipart file upload → base64 data URL stored in MongoDB
 router.post('/upload', upload.single('file'), async (req, res) => {
   try {
     if (!req.file) {
       return res.status(400).json({ error: 'No file provided' });
     }
 
-    const folder = req.body.folder || 'locallie/issues';
-    const result = await uploadBuffer(req.file.buffer, { folder });
+    const result = await uploadBuffer(req.file.buffer, { mimetype: req.file.mimetype });
 
     res.json({
       url: result.secure_url,
@@ -49,7 +48,7 @@ router.post('/upload', upload.single('file'), async (req, res) => {
       size: result.bytes
     });
   } catch (err) {
-    console.error('[Cloudinary] Upload error:', err);
+    console.error('[Storage] Upload error:', err);
     res.status(500).json({ error: err.message || 'Upload failed' });
   }
 });
@@ -263,21 +262,22 @@ router.post('/issues', async (req, res) => {
 
     const reporterUser = await User.findOne({ email: reporterEmail });
     const reporterData = isAnonymous
-      ? { username: "anonymous_resident", email: "anon@locallie.org" }
+      ? { username: "anonymous_resident", email: "anon@localfix.org" }
       : { username: reporterName || "citizen_user", email: reporterEmail || "user@example.com" };
 
-    // Upload base64 image to Cloudinary if provided
-    let imageUrl = "https://images.unsplash.com/photo-1599740831119-070df34b00cf?w=800";
+    // Store image as base64 data URL in MongoDB
+    let imageUrl = "";
     if (image && image.startsWith('data:')) {
       try {
-        const uploadResult = await uploadBase64(image, { folder: 'locallie/issues' });
+        const uploadResult = await uploadBase64(image);
         imageUrl = uploadResult.secure_url;
-        console.log('[Cloudinary] Image uploaded:', imageUrl);
+        console.log('[Storage] Issue image stored as base64 data URL in MongoDB.');
       } catch (uploadErr) {
-        console.error('[Cloudinary] Failed to upload image, using fallback:', uploadErr.message);
+        console.error('[Storage] Failed to process image:', uploadErr.message);
+        imageUrl = image; // fallback: store raw base64
       }
     } else if (image && image.startsWith('http')) {
-      imageUrl = image; // already a URL
+      imageUrl = image; // already a URL (seed data etc.)
     }
 
     const newIssue = await Issue.create({
@@ -467,16 +467,16 @@ router.post('/issues/:id/resolve', async (req, res) => {
       return res.status(403).json({ error: "You are not the hero who claimed this issue" });
     }
 
-    // Upload base64 afterImage to Cloudinary if provided
+    // Store afterImage as base64 data URL in MongoDB
     let afterImageUrl = '';
     if (afterImage && afterImage.startsWith('data:')) {
       try {
-        const uploadResult = await uploadBase64(afterImage, { folder: 'locallie/issues' });
+        const uploadResult = await uploadBase64(afterImage);
         afterImageUrl = uploadResult.secure_url;
-        console.log('[Cloudinary] Resolution image uploaded:', afterImageUrl);
+        console.log('[Storage] Resolution image stored as base64 data URL in MongoDB.');
       } catch (uploadErr) {
-        console.error('[Cloudinary] Failed to upload resolution image, using fallback:', uploadErr.message);
-        afterImageUrl = afterImage; // fallback to base64
+        console.error('[Storage] Failed to process resolution image:', uploadErr.message);
+        afterImageUrl = afterImage; // fallback: store raw base64
       }
     } else {
       afterImageUrl = afterImage;

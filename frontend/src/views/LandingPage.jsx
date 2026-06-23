@@ -3,6 +3,29 @@ import { useAuth } from '../context/AuthContext';
 import { api } from '../services/api';
 import { Search, MapPin, Sparkles, CheckCircle, ArrowRight, AlertTriangle, ShieldCheck } from 'lucide-react';
 
+const CATEGORY_FALLBACKS = {
+  'Road Damage': 'https://images.unsplash.com/photo-1515162305285-0293e4767cc2?w=800',
+  'Sanitation': 'https://images.unsplash.com/photo-1611284446314-60a58ac0deb9?w=800',
+  'Electrical': 'https://images.unsplash.com/photo-1509023467866-9099f4401b56?w=800',
+  'Water Leakage': 'https://images.unsplash.com/photo-1585771724684-38269d6639fd?w=800',
+  'Fallen Trees': 'https://images.unsplash.com/photo-1534274988757-a28bf1a57c17?w=800',
+  'Public Safety': 'https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=800',
+  'default': 'https://images.unsplash.com/photo-1599740831119-070df34b00cf?w=800'
+};
+
+const getIssueImage = (issue) => {
+  const img = issue?.image;
+  if (!img || typeof img !== 'string') {
+    return CATEGORY_FALLBACKS[issue?.category] || CATEGORY_FALLBACKS['default'];
+  }
+  const trimmed = img.trim();
+  if (!trimmed) {
+    return CATEGORY_FALLBACKS[issue?.category] || CATEGORY_FALLBACKS['default'];
+  }
+  // data: URLs are base64 images stored directly in MongoDB — display them as-is
+  return trimmed;
+};
+
 export default function LandingPage() {
   const { user, setActiveTab, showNotification } = useAuth();
   const [stats, setStats] = useState({ totalReports: 0, activeReports: 0, resolvedReports: 0, usersCount: 0 });
@@ -73,13 +96,13 @@ export default function LandingPage() {
       {/* Hero Section */}
       <header className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-16 text-center relative z-10">
         <div className="inline-flex items-center space-x-2 px-3 py-1.5 rounded bg-zinc-50 text-zinc-800 dark:bg-zinc-900/65 dark:text-zinc-300 border border-zinc-200/50 dark:border-zinc-800/80 text-xs font-semibold mb-6">
-          <ShieldCheck className="w-4 h-4 text-zinc-650 dark:text-zinc-300" />
+          <ShieldCheck className="w-4 h-4 text-zinc-600 dark:text-zinc-300" />
           <span>Professional Infrastructure Reporting & Tracking Platform</span>
         </div>
         
         <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight leading-none mb-6 text-zinc-950 dark:text-white">
           Empower Neighborhood Progress. <br />
-          <span className="text-zinc-600 dark:text-zinc-450 underline decoration-zinc-300 dark:decoration-zinc-800">
+          <span className="text-zinc-600 dark:text-zinc-500 underline decoration-zinc-300 dark:decoration-zinc-800">
             Resolve Issues Collaboratively.
           </span>
         </h1>
@@ -89,9 +112,9 @@ export default function LandingPage() {
         </p>
 
         {/* Search Bar & GPS Detector */}
-        <div className="max-w-3xl mx-auto bg-white dark:bg-zinc-950 p-2 border border-zinc-200 dark:border-zinc-800 rounded-lg shadow-lg flex flex-col md:flex-row items-center gap-3">
-          <form onSubmit={handleSearch} className="flex-1 w-full flex items-center space-x-2 px-3">
-            <Search className="w-4 h-4 text-zinc-450 shrink-0" />
+        <div className="max-w-3xl mx-auto bg-white dark:bg-zinc-950 p-2 md:p-3 border border-zinc-200 dark:border-zinc-800 rounded-xl shadow-lg flex flex-col md:flex-row items-stretch md:items-center gap-3">
+          <form onSubmit={handleSearch} className="flex-1 flex items-center space-x-2 px-3 min-h-[40px]">
+            <Search className="w-4 h-4 text-zinc-500 shrink-0" />
             <input
               type="text"
               value={searchQuery}
@@ -101,14 +124,14 @@ export default function LandingPage() {
             />
           </form>
           
-          <div className="flex w-full md:w-auto items-center gap-2 border-t md:border-t-0 md:border-l border-zinc-150 dark:border-zinc-800 pt-2 md:pt-0 pl-0 md:pl-3 shrink-0">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 border-t md:border-t-0 md:border-l border-zinc-100 dark:border-zinc-800 pt-3 md:pt-0 pl-0 md:pl-3 shrink-0">
             <button
               onClick={detectLocation}
               disabled={gpsLoading}
-              className="flex items-center justify-center space-x-2 text-xs font-semibold px-4 py-2 bg-zinc-50 hover:bg-zinc-100 dark:bg-zinc-900 dark:hover:bg-zinc-800 text-zinc-700 dark:text-zinc-300 border border-zinc-200 dark:border-zinc-800 rounded w-full md:w-auto"
+              className="flex items-center justify-center space-x-2 text-xs font-semibold px-4 py-2.5 bg-zinc-50 hover:bg-zinc-100 dark:bg-zinc-900 dark:hover:bg-zinc-800 text-zinc-700 dark:text-zinc-300 border border-zinc-200 dark:border-zinc-800 rounded-lg w-full sm:w-auto min-h-[40px] transition-all"
             >
               <MapPin className={`w-4 h-4 text-zinc-600 dark:text-zinc-400 ${gpsLoading ? 'animate-spin' : ''}`} />
-              <span>{locationName || "Detect Location"}</span>
+              <span className="truncate">{locationName || "Detect Location"}</span>
             </button>
 
             <button
@@ -120,7 +143,7 @@ export default function LandingPage() {
                   setActiveTab('dashboard');
                 }
               }}
-              className="px-5 py-2 bg-black text-white hover:bg-zinc-900 dark:bg-white dark:text-black dark:hover:bg-zinc-100 rounded text-xs font-bold transition-all w-full md:w-auto shrink-0"
+              className="px-5 py-2.5 bg-black text-white hover:bg-zinc-900 dark:bg-white dark:text-black dark:hover:bg-zinc-100 rounded-lg text-xs font-bold transition-all w-full sm:w-auto min-h-[40px] shrink-0"
             >
               Report Issue
             </button>
@@ -170,7 +193,12 @@ export default function LandingPage() {
           {issues.map(issue => (
             <div key={issue.id} className="bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-lg overflow-hidden hover:shadow-sm transition-all duration-300 flex flex-col justify-between text-left">
               <div className="relative h-44 bg-zinc-100 dark:bg-zinc-900">
-                <img src={issue.image} alt={issue.title} className="w-full h-full object-cover" />
+                <img
+                  src={getIssueImage(issue)}
+                  alt={issue.title}
+                  className="w-full h-full object-cover"
+                  onError={(e) => { e.target.src = CATEGORY_FALLBACKS[issue.category] || CATEGORY_FALLBACKS['default']; }}
+                />
                 <span className={`absolute top-3 right-3 text-[9px] font-extrabold px-2 py-0.5 rounded uppercase tracking-wider ${
                   issue.status === 'resolved' ? 'bg-zinc-100 text-zinc-800 dark:bg-zinc-800 dark:text-zinc-200' :
                   issue.status === 'claimed' ? 'bg-zinc-200 text-zinc-900 dark:bg-zinc-700 dark:text-zinc-100 border border-zinc-300/40' :
@@ -187,8 +215,8 @@ export default function LandingPage() {
                   <h3 className="font-bold text-sm line-clamp-1 mb-1">{issue.title}</h3>
                   <p className="text-xs text-zinc-500 dark:text-zinc-400 line-clamp-2 leading-relaxed mb-4">{issue.description}</p>
                 </div>
-                <div className="flex justify-between items-center text-xs border-t border-zinc-150 dark:border-zinc-850 pt-4">
-                  <div className="flex items-center space-x-1 text-zinc-450">
+                <div className="flex justify-between items-center text-xs border-t border-zinc-100 dark:border-zinc-800 pt-4">
+                  <div className="flex items-center space-x-1 text-zinc-500">
                     <MapPin className="w-3.5 h-3.5" />
                     <span className="line-clamp-1 text-[11px]">{issue.address}</span>
                   </div>
@@ -232,7 +260,7 @@ export default function LandingPage() {
                 <span>Resolved in 2 Hours</span>
               </div>
               <h3 className="text-lg font-bold">Broken Streetlight on Hospital Street</h3>
-              <p className="text-xs text-zinc-500 dark:text-zinc-450 leading-relaxed">
+              <p className="text-xs text-zinc-500 dark:text-zinc-500 leading-relaxed">
                 "The lane was pitch dark at night, making it unsafe for walking patients. The issue was claimed by local Hero John who replaced the bulb and re-secured the wiring."
               </p>
               

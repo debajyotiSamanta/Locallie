@@ -121,7 +121,7 @@ export default function Settings() {
                 className={`w-full flex items-center space-x-3 px-4 py-3 rounded-xl text-xs font-semibold border transition-all ${
                   activeSubTab === section.id
                     ? 'bg-black text-white border-black dark:bg-white dark:text-black dark:border-white shadow-sm'
-                    : 'bg-transparent text-zinc-550 border-transparent hover:bg-zinc-50 dark:hover:bg-zinc-900/60 hover:text-zinc-900 dark:hover:text-zinc-200'
+                    : 'bg-transparent text-zinc-600 border-transparent hover:bg-zinc-50 dark:hover:bg-zinc-900/60 hover:text-zinc-900 dark:hover:text-zinc-200'
                 }`}
               >
                 <Icon className="w-4.5 h-4.5" />
@@ -137,7 +137,7 @@ export default function Settings() {
           {/* PROFILE SETTINGS */}
           {activeSubTab === 'profile' && (
             <form onSubmit={handleProfileSave} className="space-y-6">
-              <h3 className="text-sm font-bold border-b border-zinc-150 dark:border-zinc-850 pb-3">Public Profile Info</h3>
+              <h3 className="text-sm font-bold border-b border-zinc-100 dark:border-zinc-800 pb-3">Public Profile Info</h3>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
@@ -147,7 +147,7 @@ export default function Settings() {
                     required
                     value={profileForm.username}
                     onChange={(e) => setProfileForm({ ...profileForm, username: e.target.value })}
-                    className="w-full px-4 py-2.5 border border-zinc-250 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/40 rounded-xl text-xs outline-none focus:ring-1 focus:ring-black dark:focus:ring-white"
+                    className="w-full px-4 py-2.5 border border-zinc-300 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/40 rounded-xl text-xs outline-none focus:ring-1 focus:ring-black dark:focus:ring-white"
                   />
                 </div>
                 <div>
@@ -157,7 +157,7 @@ export default function Settings() {
                     required
                     value={profileForm.email}
                     onChange={(e) => setProfileForm({ ...profileForm, email: e.target.value })}
-                    className="w-full px-4 py-2.5 border border-zinc-250 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/40 rounded-xl text-xs outline-none focus:ring-1 focus:ring-black dark:focus:ring-white"
+                    className="w-full px-4 py-2.5 border border-zinc-300 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/40 rounded-xl text-xs outline-none focus:ring-1 focus:ring-black dark:focus:ring-white"
                   />
                 </div>
                 <div>
@@ -166,7 +166,7 @@ export default function Settings() {
                     type="text"
                     value={profileForm.fullName}
                     onChange={(e) => setProfileForm({ ...profileForm, fullName: e.target.value })}
-                    className="w-full px-4 py-2.5 border border-zinc-250 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/40 rounded-xl text-xs outline-none focus:ring-1 focus:ring-black dark:focus:ring-white"
+                    className="w-full px-4 py-2.5 border border-zinc-300 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/40 rounded-xl text-xs outline-none focus:ring-1 focus:ring-black dark:focus:ring-white"
                     placeholder="John Doe"
                   />
                 </div>
@@ -176,7 +176,7 @@ export default function Settings() {
                     type="text"
                     value={profileForm.phone}
                     onChange={(e) => setProfileForm({ ...profileForm, phone: e.target.value })}
-                    className="w-full px-4 py-2.5 border border-zinc-250 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/40 rounded-xl text-xs outline-none focus:ring-1 focus:ring-black dark:focus:ring-white"
+                    className="w-full px-4 py-2.5 border border-zinc-300 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/40 rounded-xl text-xs outline-none focus:ring-1 focus:ring-black dark:focus:ring-white"
                     placeholder="+1 (555) 019-2834"
                   />
                 </div>
@@ -188,7 +188,7 @@ export default function Settings() {
                   rows="3"
                   value={profileForm.bio}
                   onChange={(e) => setProfileForm({ ...profileForm, bio: e.target.value })}
-                  className="w-full px-4 py-2.5 border border-zinc-250 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/40 rounded-xl text-xs outline-none focus:ring-1 focus:ring-black dark:focus:ring-white resize-none"
+                  className="w-full px-4 py-2.5 border border-zinc-300 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/40 rounded-xl text-xs outline-none focus:ring-1 focus:ring-black dark:focus:ring-white resize-none"
                 ></textarea>
               </div>
 
@@ -207,7 +207,7 @@ export default function Settings() {
           {/* NOTIFICATION SETTINGS */}
           {activeSubTab === 'notifications' && (
             <form onSubmit={handleNotificationSave} className="space-y-6">
-              <h3 className="text-sm font-bold border-b border-zinc-150 dark:border-zinc-850 pb-3">Notification Channels</h3>
+              <h3 className="text-sm font-bold border-b border-zinc-100 dark:border-zinc-800 pb-3">Notification Channels</h3>
               
               <div className="space-y-4">
                 <div className="flex items-center justify-between p-4 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/20">
@@ -291,7 +291,7 @@ export default function Settings() {
           {/* PRIVACY SETTINGS */}
           {activeSubTab === 'privacy' && (
             <form onSubmit={handlePrivacySave} className="space-y-6">
-              <h3 className="text-sm font-bold border-b border-zinc-150 dark:border-zinc-850 pb-3">Privacy Preferences</h3>
+              <h3 className="text-sm font-bold border-b border-zinc-100 dark:border-zinc-800 pb-3">Privacy Preferences</h3>
               
               <div className="space-y-4">
                 <div className="flex items-center justify-between p-4 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/20">
@@ -349,7 +349,7 @@ export default function Settings() {
           {/* APP PREFERENCES */}
           {activeSubTab === 'preferences' && (
             <form onSubmit={handlePreferencesSave} className="space-y-6">
-              <h3 className="text-sm font-bold border-b border-zinc-150 dark:border-zinc-850 pb-3">Platform Preferences</h3>
+              <h3 className="text-sm font-bold border-b border-zinc-100 dark:border-zinc-800 pb-3">Platform Preferences</h3>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
@@ -357,7 +357,7 @@ export default function Settings() {
                   <select
                     value={preferences.defaultRadius}
                     onChange={(e) => setPreferences({ ...preferences, defaultRadius: e.target.value })}
-                    className="w-full px-3 py-2.5 border border-zinc-250 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/40 rounded-xl text-xs focus:outline-none focus:ring-1 focus:ring-black dark:focus:ring-white"
+                    className="w-full px-3 py-2.5 border border-zinc-300 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/40 rounded-xl text-xs focus:outline-none focus:ring-1 focus:ring-black dark:focus:ring-white"
                   >
                     <option value="1">1 km</option>
                     <option value="5">5 km</option>
@@ -371,7 +371,7 @@ export default function Settings() {
                   <select
                     value={preferences.primaryCategory}
                     onChange={(e) => setPreferences({ ...preferences, primaryCategory: e.target.value })}
-                    className="w-full px-3 py-2.5 border border-zinc-250 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/40 rounded-xl text-xs focus:outline-none focus:ring-1 focus:ring-black dark:focus:ring-white"
+                    className="w-full px-3 py-2.5 border border-zinc-300 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/40 rounded-xl text-xs focus:outline-none focus:ring-1 focus:ring-black dark:focus:ring-white"
                   >
                     <option value="Road Damage">Road Damage</option>
                     <option value="Sanitation">Sanitation</option>
@@ -387,7 +387,7 @@ export default function Settings() {
                   <select
                     value={preferences.mapProvider}
                     onChange={(e) => setPreferences({ ...preferences, mapProvider: e.target.value })}
-                    className="w-full px-3 py-2.5 border border-zinc-250 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/40 rounded-xl text-xs focus:outline-none focus:ring-1 focus:ring-black dark:focus:ring-white"
+                    className="w-full px-3 py-2.5 border border-zinc-300 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/40 rounded-xl text-xs focus:outline-none focus:ring-1 focus:ring-black dark:focus:ring-white"
                   >
                     <option value="OpenStreetMap">OpenStreetMap (Default)</option>
                     <option value="GoogleMaps">Google Maps API</option>
@@ -411,7 +411,7 @@ export default function Settings() {
           {activeSubTab === 'security' && (
             <div className="space-y-8">
               <form onSubmit={handleSecuritySave} className="space-y-6">
-                <h3 className="text-sm font-bold border-b border-zinc-150 dark:border-zinc-850 pb-3">Update Password</h3>
+                <h3 className="text-sm font-bold border-b border-zinc-100 dark:border-zinc-800 pb-3">Update Password</h3>
                 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                   <div>
@@ -421,7 +421,7 @@ export default function Settings() {
                       required
                       value={securityForm.currentPassword}
                       onChange={(e) => setSecurityForm({ ...securityForm, currentPassword: e.target.value })}
-                      className="w-full px-4 py-2.5 border border-zinc-250 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/40 rounded-xl text-xs outline-none focus:ring-1 focus:ring-black dark:focus:ring-white"
+                      className="w-full px-4 py-2.5 border border-zinc-300 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/40 rounded-xl text-xs outline-none focus:ring-1 focus:ring-black dark:focus:ring-white"
                       placeholder="••••••••"
                     />
                   </div>
@@ -432,7 +432,7 @@ export default function Settings() {
                       required
                       value={securityForm.newPassword}
                       onChange={(e) => setSecurityForm({ ...securityForm, newPassword: e.target.value })}
-                      className="w-full px-4 py-2.5 border border-zinc-250 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/40 rounded-xl text-xs outline-none focus:ring-1 focus:ring-black dark:focus:ring-white"
+                      className="w-full px-4 py-2.5 border border-zinc-300 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/40 rounded-xl text-xs outline-none focus:ring-1 focus:ring-black dark:focus:ring-white"
                       placeholder="••••••••"
                     />
                   </div>
@@ -443,7 +443,7 @@ export default function Settings() {
                       required
                       value={securityForm.confirmNewPassword}
                       onChange={(e) => setSecurityForm({ ...securityForm, confirmNewPassword: e.target.value })}
-                      className="w-full px-4 py-2.5 border border-zinc-250 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/40 rounded-xl text-xs outline-none focus:ring-1 focus:ring-black dark:focus:ring-white"
+                      className="w-full px-4 py-2.5 border border-zinc-300 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/40 rounded-xl text-xs outline-none focus:ring-1 focus:ring-black dark:focus:ring-white"
                       placeholder="••••••••"
                     />
                   </div>
@@ -475,7 +475,7 @@ export default function Settings() {
 
               {/* Active Sessions */}
               <div className="space-y-4">
-                <h3 className="text-sm font-bold border-b border-zinc-150 dark:border-zinc-850 pb-3">Active Browser Sessions</h3>
+                <h3 className="text-sm font-bold border-b border-zinc-100 dark:border-zinc-800 pb-3">Active Browser Sessions</h3>
                 <div className="p-4 rounded-xl border border-zinc-200 dark:border-zinc-800 text-xs flex justify-between items-center">
                   <div>
                     <span className="block font-bold">Chrome on Windows (Current Session)</span>
@@ -490,7 +490,7 @@ export default function Settings() {
                 <h4 className="text-xs font-bold text-red-650 dark:text-red-500 uppercase tracking-wide">Danger Zone</h4>
                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                   <div className="text-xs">
-                    <span className="block font-bold text-zinc-850 dark:text-zinc-200">Delete Civic Profile</span>
+                    <span className="block font-bold text-zinc-800 dark:text-zinc-200">Delete Civic Profile</span>
                     <span className="block text-[10px] text-zinc-500 mt-0.5">This removes all contributions, resolves logs, and XP gamification statistics.</span>
                   </div>
                   <button

@@ -6,7 +6,7 @@ export default function Chatbot() {
   const [isOpen, setIsOpen] = useState(false);
   const [query, setQuery] = useState('');
   const [messages, setMessages] = useState([
-    { sender: 'bot', text: 'Hi! I am Locallie\'s AI Civic Assistant. You can check the status of your reported issues or ask me questions about how the community platform works!', time: new Date() }
+    { sender: 'bot', text: 'Hi! I am LocalFix\'s AI Civic Assistant. You can check the status of your reported issues or ask me questions about how the community platform works!', time: new Date() }
   ]);
   const [loading, setLoading] = useState(false);
   const messageEndRef = useRef(null);
@@ -46,22 +46,22 @@ export default function Chatbot() {
     <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end">
       {/* Expanded Chat Box */}
       {isOpen && (
-        <div className="w-[350px] sm:w-[380px] h-[480px] bg-white dark:bg-zinc-950 border border-zinc-250 dark:border-zinc-800 rounded-xl shadow-xl flex flex-col overflow-hidden mb-4 transition-all duration-300 transform scale-100 origin-bottom-right">
+        <div className="w-[350px] sm:w-[380px] h-[480px] bg-white dark:bg-zinc-950 border border-zinc-300 dark:border-zinc-800 rounded-xl shadow-xl flex flex-col overflow-hidden mb-4 transition-all duration-300 transform scale-100 origin-bottom-right">
           
           {/* Header */}
-          <div className="bg-black text-white p-4 flex items-center justify-between border-b border-zinc-850">
+          <div className="bg-black text-white p-4 flex items-center justify-between border-b border-zinc-800">
             <div className="flex items-center space-x-2.5">
               <div className="p-1.5 bg-zinc-900 rounded-lg">
                 <Sparkles className="w-4 h-4 text-white dark:text-zinc-400" />
               </div>
               <div className="text-left">
-                <h3 className="font-bold text-xs">Locallie Civic AI</h3>
+                <h3 className="font-bold text-xs">LocalFix Civic AI</h3>
                 <p className="text-[9px] text-zinc-400">Online Support</p>
               </div>
             </div>
             <button 
               onClick={() => setIsOpen(false)}
-              className="p-1 hover:bg-zinc-905 rounded-lg transition-all"
+              className="p-1 hover:bg-zinc-900 rounded-lg transition-all"
             >
               <X className="w-4.5 h-4.5" />
             </button>
@@ -78,11 +78,11 @@ export default function Chatbot() {
                   className={`max-w-[85%] rounded-lg p-3 text-xs leading-relaxed ${
                     msg.sender === 'user'
                       ? 'bg-black text-white dark:bg-white dark:text-black rounded-tr-none'
-                      : 'bg-white dark:bg-zinc-900 text-zinc-850 dark:text-zinc-200 border border-zinc-200 dark:border-zinc-800 rounded-tl-none'
+                      : 'bg-white dark:bg-zinc-900 text-zinc-800 dark:text-zinc-200 border border-zinc-200 dark:border-zinc-800 rounded-tl-none'
                   }`}
                 >
                   <p className="whitespace-pre-line">{msg.text}</p>
-                  <span className={`block text-[8px] mt-1 text-right ${msg.sender === 'user' ? 'text-zinc-300 dark:text-zinc-700' : 'text-zinc-450 dark:text-zinc-500'}`}>
+                  <span className={`block text-[8px] mt-1 text-right ${msg.sender === 'user' ? 'text-zinc-300 dark:text-zinc-700' : 'text-zinc-500 dark:text-zinc-500'}`}>
                     {new Date(msg.time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                   </span>
                 </div>
@@ -101,12 +101,12 @@ export default function Chatbot() {
           </div>
 
           {/* Chips */}
-          <div className="p-2 border-t border-zinc-150 dark:border-zinc-850 bg-white dark:bg-zinc-950 overflow-x-auto flex space-x-1.5 whitespace-nowrap scrollbar-none">
+          <div className="p-2 border-t border-zinc-100 dark:border-zinc-800 bg-white dark:bg-zinc-950 overflow-x-auto flex space-x-1.5 whitespace-nowrap scrollbar-none">
             {suggestChips.map((chip, idx) => (
               <button
                 key={idx}
                 onClick={() => handleSend(chip)}
-                className="px-2.5 py-1 bg-zinc-100 hover:bg-zinc-200 text-zinc-650 hover:text-black dark:bg-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-white rounded-lg text-[9px] font-bold border border-zinc-200/50 dark:border-zinc-800/55 transition-all"
+                className="px-2.5 py-1 bg-zinc-100 hover:bg-zinc-200 text-zinc-600 hover:text-black dark:bg-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-white rounded-lg text-[9px] font-bold border border-zinc-200/50 dark:border-zinc-800/55 transition-all"
               >
                 {chip}
               </button>
@@ -116,13 +116,13 @@ export default function Chatbot() {
           {/* Input Panel */}
           <form 
             onSubmit={(e) => { e.preventDefault(); handleSend(); }}
-            className="p-3 border-t border-zinc-200/60 dark:border-zinc-850 bg-white dark:bg-zinc-950 flex items-center space-x-2"
+            className="p-3 border-t border-zinc-200/60 dark:border-zinc-800 bg-white dark:bg-zinc-950 flex items-center space-x-2"
           >
             <input
               type="text"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder="Ask Locallie AI..."
+              placeholder="Ask LocalFix AI..."
               className="flex-1 px-4 py-2 border border-zinc-200 dark:border-zinc-800 rounded-lg text-xs bg-zinc-50 dark:bg-zinc-900 text-zinc-800 dark:text-zinc-100 focus:outline-none focus:ring-1 focus:ring-black dark:focus:ring-white"
             />
             <button

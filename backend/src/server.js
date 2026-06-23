@@ -51,12 +51,12 @@ app.use('/api', apiRouter);
 
 // Root route
 app.get('/', (req, res) => {
-  res.json({ status: "ok", message: "Welcome to Locallie AI Hyperlocal Backend API. Visit /health or /api for endpoints." });
+  res.json({ status: "ok", message: "Welcome to LocalFix AI Hyperlocal Backend API. Visit /health or /api for endpoints." });
 });
 
 // Health check
 app.get('/health', (req, res) => {
-  res.json({ status: "ok", message: "Locallie AI Hyperlocal Backend is running" });
+  res.json({ status: "ok", message: "LocalFix AI Hyperlocal Backend is running" });
 });
 
 // Export app for serverless environments (e.g. Vercel)
@@ -66,7 +66,7 @@ module.exports = app;
 if (process.env.NODE_ENV !== 'production' || !process.env.VERCEL) {
   app.listen(PORT, () => {
     console.log(`================================================`);
-    console.log(` Locallie AI Backend Server is running on port ${PORT}`);
+    console.log(` LocalFix AI Backend Server is running on port ${PORT}`);
     console.log(` API Endpoint: http://localhost:${PORT}/api`);
     console.log(`================================================`);
   });

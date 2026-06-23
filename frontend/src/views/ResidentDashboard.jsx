@@ -5,6 +5,24 @@ import GpsPicker from '../components/GpsPicker';
 import { AlertCircle, PlusCircle, LayoutDashboard, Award, Sparkles, MapPin, Eye, EyeOff, FileText, CheckCircle2, Lock, Loader2 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 
+const CATEGORY_FALLBACKS = {
+  'Road Damage': 'https://images.unsplash.com/photo-1515162305285-0293e4767cc2?w=800',
+  'Sanitation': 'https://images.unsplash.com/photo-1611284446314-60a58ac0deb9?w=800',
+  'Electrical': 'https://images.unsplash.com/photo-1509023467866-9099f4401b56?w=800',
+  'Water Leakage': 'https://images.unsplash.com/photo-1585771724684-38269d6639fd?w=800',
+  'Fallen Trees': 'https://images.unsplash.com/photo-1534274988757-a28bf1a57c17?w=800',
+  'Public Safety': 'https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=800',
+  'default': 'https://images.unsplash.com/photo-1599740831119-070df34b00cf?w=800'
+};
+
+const getIssueImage = (img, category) => {
+  if (!img || typeof img !== 'string') return CATEGORY_FALLBACKS[category] || CATEGORY_FALLBACKS['default'];
+  const trimmed = img.trim();
+  if (!trimmed) return CATEGORY_FALLBACKS[category] || CATEGORY_FALLBACKS['default'];
+  // data: URLs are base64 images stored directly in MongoDB — display them as-is
+  return trimmed;
+};
+
 export default function ResidentDashboard() {
   const { user, login, register, refreshUser, showNotification } = useAuth();
   
@@ -136,7 +154,12 @@ export default function ResidentDashboard() {
       setAiResults(res);
       
       if (res.ocrData && (res.ocrData.houseNumber || res.ocrData.roadName)) {
-        setAddress(`${res.ocrData.houseNumber}, ${res.ocrData.roadName}, Metro City`);
+        const isDefaultFallback = res.ocrData.houseNumber === "10-B" && res.ocrData.roadName === "Main Ring Road";
+        if (!isDefaultFallback) {
+          setAddress(`${res.ocrData.houseNumber}, ${res.ocrData.roadName}, Metro City`);
+        } else if (!address.trim()) {
+          setAddress(`Pinned Location (${gps.lat.toFixed(4)}, ${gps.lng.toFixed(4)})`);
+        }
       }
       
       showNotification("AI diagnostics completed!", "success");
@@ -156,18 +179,10 @@ export default function ResidentDashboard() {
 
     setFormSubmitting(true);
     try {
-      // If user selected a file, upload it to Cloudinary first
-      let imageUrl = null;
-      if (imageFile) {
-        showNotification("Uploading image...", "info");
-        try {
-          const uploadResult = await api.upload.file(imageFile);
-          imageUrl = uploadResult.url;
-        } catch (uploadErr) {
-          console.warn('Image upload failed, continuing without image:', uploadErr.message);
-          imageUrl = imagePreview || null; // fallback to base64 for backend to handle
-        }
-      }
+      // imagePreview is already a proper base64 data URL created by FileReader
+      // (e.g. data:image/jpeg;base64,...) — correct MIME type, renderable by browsers.
+      // We send it directly to avoid a double-roundtrip through /api/upload.
+      const imageUrl = imagePreview || null;
 
       const issueData = {
         title,
@@ -289,7 +304,7 @@ export default function ResidentDashboard() {
                     {!isRegister && (
                       <button
                         onClick={handleForgotPassword}
-                        className="text-[10px] text-zinc-550 hover:text-black dark:hover:text-white hover:underline"
+                        className="text-[10px] text-zinc-600 hover:text-black dark:hover:text-white hover:underline"
                         type="button"
                       >
                         Forgot Password?
@@ -387,10 +402,10 @@ export default function ResidentDashboard() {
           </div>
           <div className="flex-1">
             <span className="block text-[9px] font-bold uppercase tracking-wider text-zinc-400">XP Progress</span>
-            <div className="w-32 md:w-40 h-1.5 bg-zinc-950 rounded-full overflow-hidden mt-1 border border-zinc-850">
+            <div className="w-32 md:w-40 h-1.5 bg-zinc-950 rounded-full overflow-hidden mt-1 border border-zinc-800">
               <div className="h-full bg-white rounded-full" style={{ width: `${getLevelProgress(user.xp)}%` }}></div>
             </div>
-            <span className="block text-[8px] text-zinc-450 mt-1">{user.xp} Total XP • {user.points} Points</span>
+            <span className="block text-[8px] text-zinc-500 mt-1">{user.xp} Total XP • {user.points} Points</span>
           </div>
         </div>
       </div>
@@ -400,7 +415,7 @@ export default function ResidentDashboard() {
         <button
           onClick={() => setSubTab('report')}
           className={`pb-3 text-xs font-bold flex items-center space-x-1.5 border-b-2 transition-all ${
-            subTab === 'report' ? 'border-black text-black dark:text-white dark:border-white' : 'border-transparent text-zinc-550 hover:text-black dark:hover:text-zinc-200'
+            subTab === 'report' ? 'border-black text-black dark:text-white dark:border-white' : 'border-transparent text-zinc-600 hover:text-black dark:hover:text-zinc-200'
           }`}
         >
           <PlusCircle className="w-4.5 h-4.5" />
@@ -409,7 +424,7 @@ export default function ResidentDashboard() {
         <button
           onClick={() => setSubTab('history')}
           className={`pb-3 text-xs font-bold flex items-center space-x-1.5 border-b-2 transition-all ${
-            subTab === 'history' ? 'border-black text-black dark:text-white dark:border-white' : 'border-transparent text-zinc-550 hover:text-black dark:hover:text-zinc-200'
+            subTab === 'history' ? 'border-black text-black dark:text-white dark:border-white' : 'border-transparent text-zinc-600 hover:text-black dark:hover:text-zinc-200'
           }`}
         >
           <LayoutDashboard className="w-4.5 h-4.5" />
@@ -418,7 +433,7 @@ export default function ResidentDashboard() {
         <button
           onClick={() => setSubTab('rewards')}
           className={`pb-3 text-xs font-bold flex items-center space-x-1.5 border-b-2 transition-all ${
-            subTab === 'rewards' ? 'border-black text-black dark:text-white dark:border-white' : 'border-transparent text-zinc-550 hover:text-black dark:hover:text-zinc-200'
+            subTab === 'rewards' ? 'border-black text-black dark:text-white dark:border-white' : 'border-transparent text-zinc-600 hover:text-black dark:hover:text-zinc-200'
           }`}
         >
           <Award className="w-4.5 h-4.5" />
@@ -478,7 +493,7 @@ export default function ResidentDashboard() {
                       ) : (
                         <div className="text-center py-4">
                           <PlusCircle className="w-8 h-8 text-zinc-400 mx-auto mb-2" />
-                          <span className="block text-[10px] text-zinc-405 font-semibold">Select Photo</span>
+                          <span className="block text-[10px] text-zinc-400 font-semibold">Select Photo</span>
                         </div>
                       )}
                     </div>
@@ -502,7 +517,7 @@ export default function ResidentDashboard() {
                   />
                 </div>
 
-                <div className="flex items-center justify-between border-t border-zinc-100 dark:border-zinc-850 pt-6">
+                <div className="flex items-center justify-between border-t border-zinc-100 dark:border-zinc-800 pt-6">
                   <div className="flex items-center space-x-2">
                     <button
                       type="button"
@@ -522,7 +537,7 @@ export default function ResidentDashboard() {
                       type="button"
                       onClick={triggerAIScan}
                       disabled={aiScanning}
-                      className="px-4 py-2 bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-905 dark:hover:bg-zinc-800 text-zinc-700 dark:text-zinc-300 border border-zinc-200 dark:border-zinc-800 rounded text-xs font-semibold transition-all flex items-center space-x-2"
+                      className="px-4 py-2 bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-900 dark:hover:bg-zinc-800 text-zinc-700 dark:text-zinc-300 border border-zinc-200 dark:border-zinc-800 rounded text-xs font-semibold transition-all flex items-center space-x-2"
                     >
                       {aiScanning ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Sparkles className="w-3.5 h-3.5 text-zinc-950 dark:text-white" />}
                       <span>AI Scan Details</span>
@@ -550,7 +565,7 @@ export default function ResidentDashboard() {
 
                 {!aiResults ? (
                   <div className="space-y-3 py-6 text-center text-zinc-400 text-xs">
-                    <AlertCircle className="w-7 h-7 mx-auto mb-2 text-zinc-650" />
+                    <AlertCircle className="w-7 h-7 mx-auto mb-2 text-zinc-600" />
                     <p>Enter details and click **AI Scan Details** to trigger diagnostics.</p>
                   </div>
                 ) : (
@@ -568,7 +583,7 @@ export default function ResidentDashboard() {
                     {aiResults.imgVerification && (
                       <div className="bg-zinc-900 p-3 rounded border border-zinc-800">
                         <span className="block text-[8px] text-zinc-500 font-bold uppercase">Image Scan</span>
-                        <span className="block text-[10px] text-zinc-250 mt-0.5">{aiResults.imgVerification.message}</span>
+                        <span className="block text-[10px] text-zinc-300 mt-0.5">{aiResults.imgVerification.message}</span>
                       </div>
                     )}
 
@@ -594,16 +609,21 @@ export default function ResidentDashboard() {
 
             {myIssues.length === 0 ? (
               <div className="py-12 text-center text-zinc-400">
-                <AlertCircle className="w-8 h-8 mx-auto mb-3 text-zinc-650" />
+                <AlertCircle className="w-8 h-8 mx-auto mb-3 text-zinc-600" />
                 <p className="text-xs">No reports filed yet.</p>
               </div>
             ) : (
-              <div className="divide-y divide-zinc-200 dark:divide-zinc-850">
+              <div className="divide-y divide-zinc-200 dark:divide-zinc-800">
                 {myIssues.map(issue => (
                   <div key={issue.id} className="py-4 first:pt-0 last:pb-0 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                     <div className="flex items-center space-x-4">
                       <div className="w-14 h-11 bg-zinc-100 dark:bg-zinc-900 rounded overflow-hidden shrink-0">
-                        <img src={issue.image} className="w-full h-full object-cover" />
+                        <img
+                          src={getIssueImage(issue.image, issue.category)}
+                          alt={issue.title}
+                          className="w-full h-full object-cover"
+                          onError={(e) => { e.target.src = CATEGORY_FALLBACKS[issue.category] || CATEGORY_FALLBACKS['default']; }}
+                        />
                       </div>
                       <div>
                         <h4 className="font-bold text-xs text-zinc-800 dark:text-zinc-200">{issue.title}</h4>
@@ -633,7 +653,7 @@ export default function ResidentDashboard() {
         {/* Rewards Tab */}
         {subTab === 'rewards' && (
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <div className="lg:col-span-2 bg-white dark:bg-zinc-955 border border-zinc-200 dark:border-zinc-800 rounded-lg p-6 md:p-8 shadow-sm">
+            <div className="lg:col-span-2 bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-lg p-6 md:p-8 shadow-sm">
               <h3 className="font-bold text-sm mb-6 font-sans">Achievement Badges</h3>
 
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
@@ -659,11 +679,11 @@ export default function ResidentDashboard() {
                     <Award className="w-5 h-5" />
                   </div>
                   <h4 className="font-bold text-xs">Community Saver</h4>
-                  <p className="text-[9px] text-zinc-505 mt-1">Resolved 3 reported issues</p>
+                  <p className="text-[9px] text-zinc-500 mt-1">Resolved 3 reported issues</p>
                 </div>
               </div>
 
-              <div className="mt-8 border-t border-zinc-150 dark:border-zinc-800 pt-6">
+              <div className="mt-8 border-t border-zinc-100 dark:border-zinc-800 pt-6">
                 <h4 className="font-bold text-xs mb-4">Weekly Challenges</h4>
                 <div className="space-y-3 text-xs">
                   <div className="bg-zinc-50 dark:bg-zinc-950/40 p-4 rounded border border-zinc-200 dark:border-zinc-800 flex justify-between items-center">

@@ -57,7 +57,7 @@ export const AuthProvider = ({ children }) => {
       const data = await api.auth.register(username, email, password, role);
       setUser(data.user);
       localStorage.setItem('locallie_user', JSON.stringify(data.user));
-      showNotification(`Welcome to Locallie, ${data.user.username}!`, 'success');
+      showNotification(`Welcome to LocalFix, ${data.user.username}!`, 'success');
       setActiveTab('dashboard');
       return { success: true };
     } catch (err) {

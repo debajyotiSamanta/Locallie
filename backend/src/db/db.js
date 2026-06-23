@@ -132,7 +132,7 @@ const initialDB = {
       priority: "High",
       severity: "High",
       status: "resolved",
-      reporter: { username: "anonymous_resident", email: "anon@locallie.org" },
+      reporter: { username: "anonymous_resident", email: "anon@localfix.org" },
       comments: [
         {
           id: "c_3",

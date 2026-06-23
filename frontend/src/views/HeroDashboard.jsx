@@ -4,6 +4,23 @@ import { api } from '../services/api';
 import { Heart, CheckCircle2, ClipboardList, MapPin, Sparkles, Upload, Loader2, Award, X } from 'lucide-react';
 import confetti from 'canvas-confetti';
 
+const CATEGORY_FALLBACKS = {
+  'Road Damage': 'https://images.unsplash.com/photo-1515162305285-0293e4767cc2?w=800',
+  'Sanitation': 'https://images.unsplash.com/photo-1611284446314-60a58ac0deb9?w=800',
+  'Electrical': 'https://images.unsplash.com/photo-1509023467866-9099f4401b56?w=800',
+  'Water Leakage': 'https://images.unsplash.com/photo-1585771724684-38269d6639fd?w=800',
+  'Fallen Trees': 'https://images.unsplash.com/photo-1534274988757-a28bf1a57c17?w=800',
+  'Public Safety': 'https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=800',
+  'default': 'https://images.unsplash.com/photo-1599740831119-070df34b00cf?w=800'
+};
+const getIssueImage = (img, category) => {
+  if (!img || typeof img !== 'string') return CATEGORY_FALLBACKS[category] || CATEGORY_FALLBACKS['default'];
+  const trimmed = img.trim();
+  if (!trimmed) return CATEGORY_FALLBACKS[category] || CATEGORY_FALLBACKS['default'];
+  // data: URLs are base64 images stored directly in MongoDB — display them as-is
+  return trimmed;
+};
+
 export default function HeroDashboard() {
   const { user, refreshUser, showNotification } = useAuth();
   
@@ -118,7 +135,7 @@ export default function HeroDashboard() {
         <button
           onClick={() => setSubTab('claims')}
           className={`pb-3 text-xs font-bold flex items-center space-x-1.5 border-b-2 transition-all ${
-            subTab === 'claims' ? 'border-black text-black dark:text-white dark:border-white' : 'border-transparent text-zinc-550 hover:text-black dark:hover:text-zinc-200'
+            subTab === 'claims' ? 'border-black text-black dark:text-white dark:border-white' : 'border-transparent text-zinc-600 hover:text-black dark:hover:text-zinc-200'
           }`}
         >
           <ClipboardList className="w-4.5 h-4.5" />
@@ -127,18 +144,13 @@ export default function HeroDashboard() {
         <button
           onClick={() => setSubTab('completed')}
           className={`pb-3 text-xs font-bold flex items-center space-x-1.5 border-b-2 transition-all ${
-            subTab === 'completed' ? 'border-black text-black dark:text-white dark:border-white' : 'border-transparent text-zinc-550 hover:text-black dark:hover:text-zinc-200'
+            subTab === 'completed' ? 'border-black text-black dark:text-white dark:border-white' : 'border-transparent text-zinc-600 hover:text-black dark:hover:text-zinc-200'
           }`}
         >
           <CheckCircle2 className="w-4.5 h-4.5" />
           <span>Resolved Tasks ({completedIssues.length})</span>
         </button>
       </div>
-
-      {isClaimedLoadingOrOtherStatus ? (
-        // Note: we can just check if loading
-        null
-      ) : null}
 
       {loading ? (
         <div className="flex flex-col items-center justify-center py-20">
@@ -163,7 +175,12 @@ export default function HeroDashboard() {
                     <div key={issue.id} className="bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 p-6 rounded-lg shadow-sm flex flex-col md:flex-row justify-between gap-6 items-start md:items-center">
                       <div className="flex-grow flex flex-col sm:flex-row gap-4 items-start sm:items-center">
                         <div className="w-full sm:w-24 h-16 bg-zinc-100 dark:bg-zinc-900 rounded overflow-hidden shrink-0">
-                          <img src={issue.image} className="w-full h-full object-cover" />
+                          <img
+                            src={getIssueImage(issue.image, issue.category)}
+                            alt={issue.title}
+                            className="w-full h-full object-cover"
+                            onError={(e) => { e.target.src = CATEGORY_FALLBACKS[issue.category] || CATEGORY_FALLBACKS['default']; }}
+                          />
                         </div>
                         <div>
                           <span className="text-[9px] font-bold px-2 py-0.5 rounded bg-zinc-100 text-zinc-900 dark:bg-zinc-900 dark:text-zinc-205 border border-zinc-200 dark:border-zinc-800">
@@ -196,7 +213,7 @@ export default function HeroDashboard() {
                   <div className="bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 p-12 rounded-lg text-center shadow-sm">
                     <CheckCircle2 className="w-8 h-8 mx-auto text-zinc-400 mb-3" />
                     <h3 className="font-bold text-sm">No Resolved Issues</h3>
-                    <p className="text-xs text-zinc-505 mt-1">Complete claimed tasks to start building your portfolio.</p>
+                    <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-1">Complete claimed tasks to start building your portfolio.</p>
                   </div>
                 ) : (
                   completedIssues.map(issue => (
@@ -206,22 +223,32 @@ export default function HeroDashboard() {
                           <span className="text-[9px] font-bold text-zinc-400">Resolved on {new Date(issue.dateResolved).toLocaleDateString()}</span>
                           <h3 className="font-bold text-sm mt-1">{issue.title}</h3>
                         </div>
-                        <span className="text-[9px] font-bold bg-zinc-100 text-zinc-900 dark:bg-zinc-900 dark:text-zinc-200 px-2 py-0.5 rounded border border-zinc-250 dark:border-zinc-800">
+                        <span className="text-[9px] font-bold bg-zinc-100 text-zinc-900 dark:bg-zinc-900 dark:text-zinc-200 px-2 py-0.5 rounded border border-zinc-300 dark:border-zinc-800">
                           RESOLVED
                         </span>
                       </div>
 
                       <div className="grid grid-cols-2 gap-4">
                         <div>
-                          <span className="block text-[8px] font-bold text-zinc-450 uppercase mb-1">Before</span>
+                          <span className="block text-[8px] font-bold text-zinc-500 uppercase mb-1">Before</span>
                           <div className="h-24 rounded overflow-hidden border border-zinc-200 dark:border-zinc-800">
-                            <img src={issue.beforeImage || issue.image} className="w-full h-full object-cover" />
+                            <img
+                              src={getIssueImage(issue.beforeImage || issue.image, issue.category)}
+                              alt="Before"
+                              className="w-full h-full object-cover"
+                              onError={(e) => { e.target.src = CATEGORY_FALLBACKS[issue.category] || CATEGORY_FALLBACKS['default']; }}
+                            />
                           </div>
                         </div>
                         <div>
                           <span className="block text-[8px] font-bold text-zinc-950 dark:text-white uppercase mb-1">After</span>
                           <div className="h-24 rounded overflow-hidden border border-zinc-200 dark:border-zinc-800">
-                            <img src={issue.afterImage} className="w-full h-full object-cover" />
+                            <img
+                              src={getIssueImage(issue.afterImage, issue.category)}
+                              alt="After"
+                              className="w-full h-full object-cover"
+                              onError={(e) => { e.target.src = CATEGORY_FALLBACKS[issue.category] || CATEGORY_FALLBACKS['default']; }}
+                            />
                           </div>
                         </div>
                       </div>
@@ -234,27 +261,27 @@ export default function HeroDashboard() {
 
           {/* Sidebar */}
           <div className="lg:col-span-1 space-y-6">
-            <div className="bg-black text-white rounded-lg p-6 shadow-sm border border-zinc-800">
-              <div className="flex items-center space-x-2 text-white mb-4">
+            <div className="bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-lg p-6 shadow-sm">
+              <div className="flex items-center space-x-2 text-zinc-900 dark:text-white mb-4">
                 <Sparkles className="w-4.5 h-4.5" />
                 <h3 className="font-bold text-xs uppercase tracking-wide">AI Recommended</h3>
               </div>
-              <p className="text-[9px] text-zinc-455 mb-4">Tasks based on your resolution history:</p>
+              <p className="text-[9px] text-zinc-500 dark:text-zinc-400 mb-4">Tasks based on your resolution history:</p>
 
               {recommendedTasks.length === 0 ? (
-                <p className="text-[10px] text-zinc-500 italic text-center py-4">No recommendations available.</p>
+                <p className="text-[10px] text-zinc-500 dark:text-zinc-400 italic text-center py-4">No recommendations available.</p>
               ) : (
                 <div className="space-y-4">
                   {recommendedTasks.map(task => (
-                    <div key={task.id} className="bg-zinc-900 p-3 rounded border border-zinc-800 text-xs">
-                      <h4 className="font-bold text-xs line-clamp-1 text-white">{task.title}</h4>
-                      <p className="text-[10px] text-zinc-450 mt-1 line-clamp-1">{task.address}</p>
+                    <div key={task.id} className="bg-zinc-50 dark:bg-zinc-900 p-3 rounded border border-zinc-200 dark:border-zinc-800 text-xs">
+                      <h4 className="font-bold text-xs line-clamp-1 text-zinc-900 dark:text-white">{task.title}</h4>
+                      <p className="text-[10px] text-zinc-500 dark:text-zinc-400 mt-1 line-clamp-1">{task.address}</p>
                       
-                      <div className="flex justify-between items-center mt-3 border-t border-zinc-800 pt-2">
-                        <span className="text-[9px] font-bold text-zinc-350 uppercase">{task.category}</span>
+                      <div className="flex justify-between items-center mt-3 border-t border-zinc-200 dark:border-zinc-800 pt-2">
+                        <span className="text-[9px] font-bold text-zinc-600 dark:text-zinc-400 uppercase">{task.category}</span>
                         <button
                           onClick={() => handleClaim(task.id)}
-                          className="px-2.5 py-1 bg-white hover:bg-zinc-100 text-black rounded text-[9px] font-bold transition-all"
+                          className="px-2.5 py-1 bg-black hover:bg-zinc-900 text-white dark:bg-white dark:text-black dark:hover:bg-zinc-100 rounded text-[9px] font-bold transition-all"
                         >
                           Claim
                         </button>
@@ -267,21 +294,21 @@ export default function HeroDashboard() {
 
             <div className="bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 p-6 rounded-lg shadow-sm text-xs">
               <h3 className="font-bold text-xs mb-4 flex items-center space-x-2">
-                <Award className="w-4.5 h-4.5 text-zinc-950 dark:text-white" />
-                <span>My Achievements</span>
+                <Award className="w-4.5 h-4.5 text-zinc-900 dark:text-white" />
+                <span className="text-zinc-900 dark:text-white">My Achievements</span>
               </h3>
               <div className="space-y-3">
                 <div className="flex justify-between font-semibold">
-                  <span>Current Tier</span>
-                  <span className="text-zinc-950 dark:text-white font-bold capitalize">{user.reputation}</span>
+                  <span className="text-zinc-700 dark:text-zinc-300">Current Tier</span>
+                  <span className="text-zinc-900 dark:text-white font-bold capitalize">{user.reputation}</span>
                 </div>
-                <div className="flex justify-between border-t border-zinc-100 dark:border-zinc-800 pt-2 text-zinc-505">
+                <div className="flex justify-between border-t border-zinc-100 dark:border-zinc-800 pt-2 text-zinc-600 dark:text-zinc-400">
                   <span>Tasks Solved</span>
-                  <span className="font-bold text-zinc-800 dark:text-zinc-200">{completedIssues.length}</span>
+                  <span className="font-bold text-zinc-900 dark:text-zinc-200">{completedIssues.length}</span>
                 </div>
-                <div className="flex justify-between text-zinc-505">
+                <div className="flex justify-between text-zinc-600 dark:text-zinc-400">
                   <span>Total XP</span>
-                  <span className="font-bold text-zinc-800 dark:text-zinc-200">{user.xp} XP</span>
+                  <span className="font-bold text-zinc-900 dark:text-zinc-200">{user.xp} XP</span>
                 </div>
               </div>
             </div>
@@ -292,26 +319,26 @@ export default function HeroDashboard() {
       {/* Resolution Modal */}
       {resolvingIssue && (
         <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-white dark:bg-zinc-955 border border-zinc-200 dark:border-zinc-800 w-full max-w-md rounded overflow-hidden shadow-xl flex flex-col">
+          <div className="bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 w-full max-w-md rounded overflow-hidden shadow-xl flex flex-col">
             
-            <div className="px-6 py-4 border-b border-zinc-150 dark:border-zinc-850 flex justify-between items-center bg-zinc-50 dark:bg-zinc-900/60">
-              <h3 className="font-bold text-xs">Submit Resolution Evidence</h3>
-              <button onClick={() => { setResolvingIssue(null); setAfterImagePreview(''); }} className="p-1 hover:bg-zinc-200 rounded">
-                <X className="w-4 h-4 text-zinc-500" />
+            <div className="px-6 py-4 border-b border-zinc-100 dark:border-zinc-800 flex justify-between items-center bg-zinc-50 dark:bg-zinc-900/60">
+              <h3 className="font-bold text-xs text-zinc-900 dark:text-white">Submit Resolution Evidence</h3>
+              <button onClick={() => { setResolvingIssue(null); setAfterImagePreview(''); }} className="p-1 hover:bg-zinc-200 dark:hover:bg-zinc-800 rounded">
+                <X className="w-4 h-4 text-zinc-500 dark:text-zinc-400" />
               </button>
             </div>
 
             <form onSubmit={handleResolveSubmit} className="p-6 space-y-4">
               <div className="text-left">
-                <label className="block text-[10px] font-bold text-zinc-500 uppercase mb-2">Issue Title</label>
-                <div className="bg-zinc-50 dark:bg-zinc-950 p-3 rounded border border-zinc-200/40 text-xs text-zinc-800 dark:text-zinc-200">
+                <label className="block text-[10px] font-bold text-zinc-500 dark:text-zinc-400 uppercase mb-2">Issue Title</label>
+                <div className="bg-zinc-50 dark:bg-zinc-900 p-3 rounded border border-zinc-200/40 dark:border-zinc-800/40 text-xs text-zinc-800 dark:text-zinc-200">
                   {resolvingIssue.title}
                 </div>
               </div>
 
               <div className="text-left">
-                <label className="block text-[10px] font-bold text-zinc-500 uppercase mb-2">Upload After-Fix Image Evidence *</label>
-                <div className="border border-dashed border-zinc-200 dark:border-zinc-800 rounded p-4 flex flex-col items-center justify-center bg-zinc-50 dark:bg-zinc-900/40 relative cursor-pointer hover:bg-zinc-100">
+                <label className="block text-[10px] font-bold text-zinc-500 dark:text-zinc-400 uppercase mb-2">Upload After-Fix Image Evidence *</label>
+                <div className="border border-dashed border-zinc-200 dark:border-zinc-800 rounded p-4 flex flex-col items-center justify-center bg-zinc-50 dark:bg-zinc-900/40 relative cursor-pointer hover:bg-zinc-100 dark:hover:bg-zinc-800/40">
                   <input
                     type="file"
                     accept="image/*"
@@ -324,13 +351,13 @@ export default function HeroDashboard() {
                   ) : (
                     <div className="text-center py-4">
                       <Upload className="w-6 h-6 text-zinc-400 mx-auto mb-2" />
-                      <span className="block text-[9px] text-zinc-405 font-semibold">Select Evidence Photo</span>
+                      <span className="block text-[9px] text-zinc-400 font-semibold">Select Evidence Photo</span>
                     </div>
                   )}
                 </div>
               </div>
 
-              <div className="flex space-x-3 pt-4 border-t border-zinc-150 dark:border-zinc-850">
+              <div className="flex space-x-3 pt-4 border-t border-zinc-100 dark:border-zinc-800">
                 <button
                   type="button"
                   onClick={() => { setResolvingIssue(null); setAfterImagePreview(''); }}
